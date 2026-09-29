@@ -1,0 +1,117 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', Tahoma, 'Noto Sans Arabic', 'Noto Sans', system-ui, sans-serif;
+  --color-ink: #f7efe4;
+  --color-ink-dim: #c9b8a3;
+  --color-night: #140d08;
+  --color-night-soft: #221610;
+  --color-card: #2a1c12;
+  --color-card-hover: #382615;
+  --color-amber: #f2a33c;
+  --color-amber-deep: #c97b1e;
+  --color-focus: #ffd166;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed 1920x1080 design stage, letterboxed and scaled by JS. */
+.tv-stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  background:
+    radial-gradient(1400px 900px at 85% -10%, #3a2410 0%, transparent 60%),
+    radial-gradient(1200px 800px at -10% 110%, #241708 0%, transparent 55%),
+    var(--color-night);
+  overflow: hidden;
+}
+
+.tv-safe {
+  position: absolute;
+  inset: 54px 96px; /* 5% overscan safe area */
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus treatment: high-contrast ring + slight zoom. Applied via [data-focused]
+   which the spatial nav engine sets on the focused DOM node. */
+.focusable {
+  outline: none;
+  transition:
+    transform 0.14s ease-out,
+    box-shadow 0.14s ease-out,
+    background-color 0.14s ease-out,
+    border-color 0.14s ease-out;
+}
+.focusable[data-focused='true'],
+.focusable.focused {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 4px var(--color-focus),
+    0 0 32px 6px rgb(255 209 102 / 0.45);
+  z-index: 5;
+}
+.focusable-static[data-focused='true'],
+.focusable-static.focused {
+  transform: none;
+  box-shadow:
+    0 0 0 4px var(--color-focus),
+    0 0 32px 6px rgb(255 209 102 / 0.45);
+  z-index: 5;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.8);
+}
+
+@keyframes splash-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.03);
+  }
+}
+.splash-logo {
+  animation: splash-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
