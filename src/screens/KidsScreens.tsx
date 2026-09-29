@@ -102,7 +102,7 @@ export const KidsScreen: React.FC = () => {
           {cards.map((card, i) => (
             <div key={card.id} className="kids-pop" style={{ animationDelay: `${Math.min(i, 14) * 45}ms` }}>
               <KidsCardView
-                focusKey={`kid-${i}`}
+                focusKey={`kid-${card.id}`}
                 card={card}
                 minutesLabel={s.minutesShort}
                 onEnter={() => navigate({ name: 'kidsRecipe', id: card.id })}

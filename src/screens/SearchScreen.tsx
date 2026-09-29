@@ -76,12 +76,12 @@ export const SearchScreen: React.FC = () => {
               </h2>
             )}
             <div className="grid grid-cols-5 gap-6 py-2">
-              {results.map((id, i) => {
+              {results.map((id) => {
                 const card = data.index.get(id)!;
                 return (
                   <RecipeCardView
                     key={id}
-                    focusKey={`sr-${i}`}
+                    focusKey={`sr-${id}`}
                     card={card}
                     onEnter={() => navigate({ name: 'recipe', id })}
                   />
