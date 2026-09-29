@@ -21,7 +21,7 @@ import { HomeScreen, HOME_DEFAULT_FOCUS } from './screens/HomeScreen';
 import { ChaptersScreen, ChapterScreen } from './screens/ChaptersScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { RecipeScreen } from './screens/RecipeScreen';
-import { KidsScreen, KidsRecipeScreen } from './screens/KidsScreens';
+import { KIDS_DEFAULT_FOCUS, KidsDoneScreen, KidsRecipeScreen, KidsScreen, KidsStepsScreen } from './screens/KidsScreens';
 import { SettingsScreen, SETTINGS_DEFAULT_FOCUS } from './screens/SettingsScreen';
 
 const TAB_NAMES = new Set<Screen['name']>(['home', 'chapters', 'search', 'kids', 'settings']);
@@ -200,6 +200,14 @@ export default function App() {
     [rememberFocus],
   );
 
+  const jumpTo = useCallback(
+    (screen: Screen) => {
+      rememberFocus();
+      setStack((prev) => [prev[0] ?? { name: 'home' }, screen]);
+    },
+    [rememberFocus],
+  );
+
   const back = useCallback(() => {
     if (video) {
       setVideo(null);
@@ -216,6 +224,15 @@ export default function App() {
   }, [video, rememberFocus, stack.length]);
 
   useEffect(() => installBackHandler(back), [back]);
+
+  // Fire TV MENU key (injected by the Android shell as a 'fifi:menu' event).
+  useEffect(() => {
+    const onMenu = () => {
+      if (manifest && data && !video) goTab({ name: 'settings' });
+    };
+    window.addEventListener('fifi:menu', onMenu);
+    return () => window.removeEventListener('fifi:menu', onMenu);
+  }, [manifest, data, video, goTab]);
 
   const openVideo = useCallback((id: string, title: string) => {
     preVideoFocus.current = getCurrentFocusKey();
@@ -254,7 +271,9 @@ export default function App() {
       chapters: `ch-${data?.chapters[0]?.id ?? ''}`,
       chapter: `grid-${top.name === 'chapter' ? top.chapterId : 0}-0`,
       search: firstKeyForLang(lang),
-      kids: 'kid-0',
+      kids: KIDS_DEFAULT_FOCUS,
+      kidsSteps: 'kstep-card',
+      kidsDone: 'kids-done-again',
       settings: SETTINGS_DEFAULT_FOCUS,
       language: `lang-${lang}`,
     };
@@ -293,6 +312,7 @@ export default function App() {
             data,
             navigate,
             goTab,
+            jumpTo,
             back,
             setLanguage,
             openVideo,
@@ -309,6 +329,7 @@ export default function App() {
               data: EMPTY_DATA,
               navigate,
               goTab,
+              jumpTo,
               back,
               setLanguage,
               openVideo,
@@ -316,7 +337,7 @@ export default function App() {
               ensureFocus,
             }
           : null,
-    [manifest, data, lang, dir, strings, navigate, goTab, back, setLanguage, openVideo, closeVideo, ensureFocus],
+    [manifest, data, lang, dir, strings, navigate, goTab, jumpTo, back, setLanguage, openVideo, closeVideo, ensureFocus],
   );
 
   const renderScreen = (screen: Screen) => {
@@ -335,6 +356,10 @@ export default function App() {
         return <KidsScreen />;
       case 'kidsRecipe':
         return <KidsRecipeScreen id={screen.id} />;
+      case 'kidsSteps':
+        return <KidsStepsScreen id={screen.id} />;
+      case 'kidsDone':
+        return <KidsDoneScreen id={screen.id} title={screen.title} />;
       case 'settings':
         return <SettingsScreen />;
       case 'language':

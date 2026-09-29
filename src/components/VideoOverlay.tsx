@@ -55,25 +55,29 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({ videoId, title, onCl
         <FocusGroup focusKey="video-actions" className="flex gap-5">
           <Focusable focusKey="video-toggle" onEnter={toggle} className="rounded-2xl">
             {(f) => (
-              <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-amber text-night' : 'bg-card text-ink'}`}>
+              <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-tomato text-white' : 'bg-card text-ink'}`}>
                 ⏯ {s.playPause}
               </span>
             )}
           </Focusable>
-          <Focusable
-            focusKey="video-youtube"
-            onEnter={() => window.open(youtubeWatchUrl(videoId), '_blank')}
-            className="rounded-2xl"
-          >
-            {(f) => (
-              <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-amber text-night' : 'bg-card text-ink'}`}>
-                ▶ {s.openInYouTube}
-              </span>
-            )}
-          </Focusable>
+          {/* window.open is a dead end inside the Android WebView wrapper —
+              only offer the external link where a browser exists. */}
+          {!(window as unknown as { FifiBridge?: unknown }).FifiBridge && (
+            <Focusable
+              focusKey="video-youtube"
+              onEnter={() => window.open(youtubeWatchUrl(videoId), '_blank')}
+              className="rounded-2xl"
+            >
+              {(f) => (
+                <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-tomato text-white' : 'bg-card text-ink'}`}>
+                  ▶ {s.openInYouTube}
+                </span>
+              )}
+            </Focusable>
+          )}
           <Focusable focusKey="video-close" onEnter={onClose} className="rounded-2xl">
             {(f) => (
-              <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-amber text-night' : 'bg-card text-ink'}`}>
+              <span className={`block rounded-2xl px-10 py-4 text-2xl font-bold ${f ? 'bg-tomato text-white' : 'bg-card text-ink'}`}>
                 ✕ {s.close}
               </span>
             )}

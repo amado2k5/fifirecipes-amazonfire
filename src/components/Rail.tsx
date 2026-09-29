@@ -39,7 +39,12 @@ export const Rail: React.FC<RailProps> = ({ focusKey, title, count, renderItem }
   }
   return (
     <FocusGroup focusKey={focusKey} className="mb-2">
-      {title != null && <h2 className="text-4xl font-bold text-ink mb-3 px-2">{title}</h2>}
+      {title != null && (
+        <h2 className="mb-3 flex items-center gap-3 px-2 text-4xl font-bold text-ink">
+          <span className="inline-block h-7 w-7 rounded-full bg-leaf" aria-hidden="true" />
+          {title}
+        </h2>
+      )}
       <div className="flex gap-6 overflow-hidden p-5 -m-5" style={{ width: 'calc(100% + 40px)' }}>
         {items}
       </div>

@@ -38,9 +38,9 @@ export const ChapterScreen: React.FC<{ chapterId: number; title: string }> = ({ 
   const [anchor, setAnchor] = useState(0);
   return (
     <div className="flex h-full flex-col">
-      <header className="mb-4 flex items-baseline gap-6 px-1">
-        <h1 className="text-4xl font-bold">{title}</h1>
-        <span className="text-2xl text-ink-dim">{cards.length}</span>
+      <header className="mb-4 flex items-center gap-6 px-1">
+        <h1 className="text-4xl font-extrabold text-ink">{title}</h1>
+        <span className="rounded-full bg-leaf-soft px-5 py-1.5 text-2xl font-bold text-leaf-deep">{cards.length}</span>
       </header>
       <FocusGroup focusKey={`chapter-grid-${chapterId}`} className="hide-scrollbar min-h-0 flex-1 overflow-y-auto pb-16">
         <div className="grid grid-cols-5 gap-6 py-4">

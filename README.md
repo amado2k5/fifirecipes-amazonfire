@@ -34,18 +34,30 @@ Android TV keycodes (`KEYCODE_DPAD_*` 19–22, `KEYCODE_ENTER` 66,
 ## Layout & UX
 
 - Fixed 1920×1080 stage, letterboxed + scaled to the window.
-- 5% overscan-safe margins (`tv-safe`), ≥28px body text, high-contrast
-  focus ring (scale + glow).
+- 5% overscan-safe margins (`tv-safe`), ≥28px body text, tomato-orange
+  focus ring (scale + warm lift) on every interactive element.
+- Light "fresh market" theme matching fifi.cooking: warm cream canvas,
+  leaf-green/tomato/sun produce accents, the site font stack (Plus Jakarta
+  Sans, Tajawal, Vazirmatn, Noto Nastaliq Urdu) and the brand emblem
+  (`public/logo.png`) throughout.
 - Full RTL mirroring for `ar`, `he`, `ur`, `fa`, `ps` (driven by the
   manifest's per-language `dir` field; `ku` is LTR).
-- Screens: Splash → Language picker (first run, persisted) → Home (hero +
-  feed rails) → Chapters grid → Chapter browse grid → Search (D-pad
-  keyboard) → Recipe detail → Kids → Kids detail → Settings.
+- Screens: Splash → Language picker (first run, persisted) → Home (split
+  hero + feed rails) → Chapters grid → Chapter browse grid → Search
+  (D-pad keyboard) → Recipe detail (notebook card, numbered steps) →
+  Kids (rainbow header, group filters) → Kids "Get ready" (tickable
+  ingredients, safety row) → Kids steps (one big card, progress dots,
+  grown-up/timer badges) → celebration → Settings.
+- Kids mode mirrors the website's Cooking with Kids: polka-dot canvas,
+  Baloo 2/Baloo Bhaijaan 2/Heebo faces, crayon art library, pop/wiggle
+  motion, `prefers-reduced-motion` respected.
 - Memory budget for 1GB Fire TV Sticks: rails render a ~25-card window,
   chapter grids render full content only within ±45 cards of focus, images
   use `loading="lazy"` + `decoding="async"` and never exceed screen size.
 - Videos play in a full-screen YouTube IFrame overlay
-  (`youtube.com/embed/<id>?autoplay=1`) with an "Open in YouTube" fallback.
+  (`youtube.com/embed/<id>?autoplay=1&enablejsapi=1`) with remote
+  play/pause; the "Open in YouTube" button is hidden inside the APK
+  wrapper where `window.open` is a dead end.
 
 ## Build
 
@@ -67,8 +79,17 @@ Bundle budget: initial JS ≈ 125KB gzipped, CSS ≈ 6KB gzipped.
 The `android/` directory contains a minimal native wrapper: a full-screen
 WebView that loads `https://firetvapp.fifi.cooking/` (hosted mode — store
 updates ship instantly via the Pages deploy). DPAD/Enter reach JS natively;
-BACK and media play/pause are injected as synthetic key events; at the app
-root the web app calls `FifiBridge.exitApp()` to finish the Activity.
+BACK and media play/pause are injected as synthetic key events; MENU
+dispatches a `fifi:menu` event the app maps to Settings. At the app root
+the web app calls `FifiBridge.exitApp()` to finish the Activity.
+
+Lifecycle/compliance details in `MainActivity.java`: `onPause()` pauses
+WebView renderers and any playing YouTube iframe (Amazon test criterion
+2.19/3.13 — media must stop on exit/standby), `onResume()` resumes,
+`onTrimMemory()` frees WebView caches on low-RAM sticks, WebView state is
+saved/restored across process death, and a main-frame load failure swaps
+in a native branded retry view so a dead browser error page never shows
+(a visual-defect rejection risk).
 
 Build it:
 

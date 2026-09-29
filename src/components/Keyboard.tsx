@@ -38,7 +38,11 @@ interface KeyboardProps {
 export const OnScreenKeyboard: React.FC<KeyboardProps> = ({ lang, onChar, onBackspace, onSpace, onClear }) => {
   const rows = ROWS[scriptForLang(lang)] ?? LATIN_ROWS;
   const keyCls = (focused: boolean) =>
-    `flex items-center justify-center rounded-xl text-3xl font-semibold ${focused ? 'bg-amber text-night' : 'bg-card text-ink'}`;
+    `flex items-center justify-center rounded-2xl text-3xl font-bold border-2 ${
+      focused
+        ? 'bg-leaf text-white border-leaf shadow-lg'
+        : 'bg-card text-ink border-card-border shadow-sm'
+    }`;
   return (
     <FocusGroup focusKey="osk" className="flex flex-col items-center gap-3">
       {rows.map((row, ri) => (

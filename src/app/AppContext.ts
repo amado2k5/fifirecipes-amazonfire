@@ -10,6 +10,8 @@ export type Screen =
   | { name: 'recipe'; id: string }
   | { name: 'kids' }
   | { name: 'kidsRecipe'; id: string }
+  | { name: 'kidsSteps'; id: string }
+  | { name: 'kidsDone'; id: string; title: string }
   | { name: 'settings' }
   | { name: 'language'; firstRun?: boolean };
 
@@ -20,6 +22,10 @@ export const screenId = (s: Screen): string =>
       ? `recipe:${s.id}`
       : s.name === 'kidsRecipe'
         ? `kid:${s.id}`
+        : s.name === 'kidsSteps'
+          ? `kidsteps:${s.id}`
+          : s.name === 'kidsDone'
+            ? `kiddone:${s.id}`
         : s.name === 'language'
           ? `language:${s.firstRun ? 'first' : 'settings'}`
           : s.name;
@@ -41,6 +47,8 @@ export interface AppContextValue {
   navigate: (screen: Screen) => void;
   /** Top-level tabs replace each other instead of piling up on the stack. */
   goTab: (screen: Screen) => void;
+  /** Collapse the stack back to [home, screen] — e.g. kids celebration → kids grid. */
+  jumpTo: (screen: Screen) => void;
   back: () => void;
   setLanguage: (code: string) => void;
   openVideo: (videoId: string, title: string) => void;

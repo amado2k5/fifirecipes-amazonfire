@@ -62,10 +62,18 @@ function localize(file: RecipeFile, lang: string): Localized {
   };
 }
 
-const Chip: React.FC<{ label?: string; value?: string }> = ({ label, value }) =>
+const Chip: React.FC<{ label?: string; value?: string; tone?: 'leaf' | 'tomato' | 'sun' }> = ({ label, value, tone = 'leaf' }) =>
   value ? (
-    <span className="rounded-xl bg-card px-5 py-2.5 text-2xl text-ink">
-      {label && <span className="me-2 text-ink-dim">{label}</span>}
+    <span
+      className={`rounded-full px-5 py-2.5 text-2xl font-semibold ${
+        tone === 'leaf'
+          ? 'bg-leaf-soft text-leaf-deep'
+          : tone === 'tomato'
+            ? 'bg-tomato-soft text-tomato'
+            : 'bg-sun-soft text-ink'
+      }`}
+    >
+      {label && <span className="me-2 opacity-70">{label}</span>}
       {value}
     </span>
   ) : null;
@@ -130,24 +138,27 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
   const est = file.estimate;
 
   return (
-    <FocusGroup focusKey={`recipe-${id}`} className="hide-scrollbar h-full overflow-y-auto pb-24">
-      <Focusable focusKey={RECIPE_DEFAULT_FOCUS} isStatic className="rounded-3xl">
-        <div className="flex gap-10 rounded-3xl bg-night-soft p-8">
+    <FocusGroup focusKey={`recipe-${id}`} className="hide-scrollbar h-full overflow-y-auto pb-24 fade-in">
+      <Focusable focusKey={RECIPE_DEFAULT_FOCUS} isStatic className="rounded-[2rem]">
+        <div
+          className="flex gap-10 rounded-[2rem] border-2 border-card-border bg-card p-8"
+          style={{ boxShadow: '0 8px 30px rgb(67 49 31 / 0.10)' }}
+        >
           <Img
             src={assetUrl(heroImg)}
             alt={loc.title}
-            className="h-[440px] w-[640px] shrink-0 rounded-2xl object-cover"
+            className="h-[440px] w-[640px] shrink-0 rounded-3xl object-cover"
           />
           <div className="min-w-0 py-2">
-            {loc.chapter && <p className="mb-3 text-2xl font-semibold text-amber">{loc.chapter}</p>}
-            <h1 className="text-5xl font-extrabold leading-tight">{loc.title}</h1>
+            {loc.chapter && <p className="mb-3 text-2xl font-bold text-leaf-deep">{loc.chapter}</p>}
+            <h1 className="text-5xl font-extrabold leading-tight text-ink">{loc.title}</h1>
             {loc.subtitle && <p className="mt-3 text-2xl italic text-ink-dim">{loc.subtitle}</p>}
             <div className="mt-6 flex flex-wrap gap-3">
-              <Chip label={s.prep} value={loc.prepTime} />
-              <Chip label={s.cook} value={loc.cookTime} />
-              <Chip label={s.servings} value={loc.servings} />
-              <Chip value={loc.category} />
-              <Chip value={loc.cookingMethod} />
+              <Chip label={s.prep} value={loc.prepTime} tone="leaf" />
+              <Chip label={s.cook} value={loc.cookTime} tone="tomato" />
+              <Chip label={s.servings} value={loc.servings} tone="sun" />
+              <Chip value={loc.category} tone="leaf" />
+              <Chip value={loc.cookingMethod} tone="tomato" />
             </div>
             {est && (est.kcal || est.protein || est.carbs || est.fat) && (
               <div className="mt-4 flex flex-wrap gap-3 text-xl text-ink-dim">
@@ -158,9 +169,9 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
               </div>
             )}
             {loc.culturalNotes && (
-              <div className="mt-6 border-s-4 border-amber ps-5">
-                <p className="text-xl font-semibold text-amber">{s.culturalNotes}</p>
-                <p className="mt-2 text-[26px] leading-relaxed text-ink-dim">{loc.culturalNotes}</p>
+              <div className="mt-6 rounded-2xl border-s-4 border-sun bg-sun-soft p-5">
+                <p className="text-xl font-bold text-leaf-deep">{s.culturalNotes}</p>
+                <p className="mt-2 text-[24px] leading-relaxed text-ink">{loc.culturalNotes}</p>
               </div>
             )}
           </div>
@@ -169,13 +180,17 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
 
       <div className="mt-10 grid grid-cols-3 gap-10">
         <section>
-          <h2 className="mb-4 text-4xl font-bold">{s.ingredients}</h2>
-          <div className="rounded-2xl bg-card p-6">
+          <h2 className="mb-4 flex items-center gap-3 text-4xl font-bold text-ink">
+            <span className="inline-block h-7 w-7 rounded-full bg-leaf" aria-hidden="true" />
+            {s.ingredients}
+          </h2>
+          <div className="rounded-3xl border-2 border-card-border bg-card p-6">
             {loc.ingredients.map((ing, i) => (
               <Focusable key={i} focusKey={`ing-${i}`} isStatic className="rounded-lg">
-                <div className={`flex gap-3 py-3 text-[24px] leading-snug ${i ? 'border-t border-white/5' : ''}`}>
-                  <span className="min-w-0 flex-1 font-medium">{ing.name}</span>
-                  {ing.amount && <span className="shrink-0 text-amber">{ing.amount}</span>}
+                <div className={`flex gap-3 py-3 text-[24px] leading-snug ${i ? 'border-t-2 border-card-border' : ''}`}>
+                  <span className="mt-2 inline-block h-3 w-3 shrink-0 rounded-full bg-leaf" aria-hidden="true" />
+                  <span className="min-w-0 flex-1 font-medium text-ink">{ing.name}</span>
+                  {ing.amount && <span className="shrink-0 font-bold text-leaf-deep">{ing.amount}</span>}
                 </div>
               </Focusable>
             ))}
@@ -183,15 +198,18 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
         </section>
 
         <section className="col-span-2">
-          <h2 className="mb-4 text-4xl font-bold">{s.steps}</h2>
+          <h2 className="mb-4 flex items-center gap-3 text-4xl font-bold text-ink">
+            <span className="inline-block h-7 w-7 rounded-full bg-tomato" aria-hidden="true" />
+            {s.steps}
+          </h2>
           <div className="flex flex-col gap-4">
             {coreSteps.map((st) => (
-              <Focusable key={st.n} focusKey={`step-${st.n}`} isStatic className="rounded-2xl">
-                <div className="flex gap-5 rounded-2xl bg-card p-6">
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber text-3xl font-extrabold text-night">
+              <Focusable key={st.n} focusKey={`step-${st.n}`} isStatic className="rounded-3xl">
+                <div className="flex gap-5 rounded-3xl border-2 border-card-border bg-card p-6">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-leaf text-3xl font-extrabold text-white">
                     {st.n}
                   </span>
-                  <p className="text-[26px] leading-relaxed">{st.text}</p>
+                  <p className="text-[26px] leading-relaxed text-ink">{st.text}</p>
                 </div>
               </Focusable>
             ))}
@@ -201,16 +219,19 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
 
       {altGroups.size > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-4xl font-bold">{s.alternativeMethods}</h2>
+          <h2 className="mb-4 flex items-center gap-3 text-4xl font-bold text-ink">
+            <span className="inline-block h-7 w-7 rounded-full bg-berry" aria-hidden="true" />
+            {s.alternativeMethods}
+          </h2>
           <div className="flex flex-col gap-4">
             {[...altGroups.entries()].map(([label, steps], gi) =>
               steps.map((st) => (
-                <Focusable key={`${gi}-${st.n}`} focusKey={`alt-${gi}-${st.n}`} isStatic className="rounded-2xl">
-                  <div className="rounded-2xl border border-amber/30 bg-card p-6">
-                    <span className="mb-2 inline-block rounded-lg bg-amber/20 px-4 py-1 text-xl font-semibold text-amber">
+                <Focusable key={`${gi}-${st.n}`} focusKey={`alt-${gi}-${st.n}`} isStatic className="rounded-3xl">
+                  <div className="rounded-3xl border-2 border-berry/30 bg-tomato-soft/50 p-6">
+                    <span className="mb-2 inline-block rounded-full bg-berry/15 px-4 py-1 text-xl font-bold text-berry">
                       {label}
                     </span>
-                    <p className="text-[26px] leading-relaxed">{st.text}</p>
+                    <p className="text-[26px] leading-relaxed text-ink">{st.text}</p>
                   </div>
                 </Focusable>
               )),
@@ -221,10 +242,15 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
 
       {tips.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-4xl font-bold">{s.tips}</h2>
+          <h2 className="mb-4 flex items-center gap-3 text-4xl font-bold text-ink">
+            <span className="inline-block h-7 w-7 rounded-full bg-sun" aria-hidden="true" />
+            {s.tips}
+          </h2>
           {tips.map((st, i) => (
-            <Focusable key={st.n} focusKey={`tip-${i}`} isStatic className="rounded-2xl">
-              <p className="rounded-2xl bg-card p-6 text-[26px] leading-relaxed text-ink-dim">💡 {st.text}</p>
+            <Focusable key={st.n} focusKey={`tip-${i}`} isStatic className="mb-4 rounded-3xl">
+              <p className="rounded-3xl border-2 border-card-border bg-sun-soft p-6 text-[26px] font-medium leading-relaxed text-ink">
+                💡 {st.text}
+              </p>
             </Focusable>
           ))}
         </section>

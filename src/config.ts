@@ -8,7 +8,7 @@ export const STAGE_HEIGHT = 1080;
 export const LANG_STORAGE_KEY = 'fifi-tv:language';
 
 export const youtubeEmbedUrl = (id: string) =>
-  `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+  `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&enablejsapi=1`;
 
 export const youtubeWatchUrl = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 

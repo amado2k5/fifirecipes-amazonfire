@@ -8,6 +8,17 @@ import { TopNav } from '../components/TopNav';
 
 export const HOME_DEFAULT_FOCUS = 'rk-featured-0';
 
+const MetaPill: React.FC<{ text?: string; tone: 'leaf' | 'tomato' | 'sun' }> = ({ text, tone }) =>
+  text ? (
+    <span
+      className={`rounded-full px-5 py-2 text-[22px] font-bold ${
+        tone === 'leaf' ? 'bg-leaf-soft text-leaf-deep' : tone === 'tomato' ? 'bg-tomato-soft text-tomato' : 'bg-sun-soft text-ink'
+      }`}
+    >
+      {text}
+    </span>
+  ) : null;
+
 export const HomeScreen: React.FC = () => {
   const { s, data, navigate } = useApp();
   const [heroIdx, setHeroIdx] = useState(0);
@@ -19,19 +30,30 @@ export const HomeScreen: React.FC = () => {
   const heroCard = data.index.get(featured[Math.min(heroIdx, featured.length - 1)] ?? '');
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="fade-in flex h-full flex-col">
       <TopNav active="home" />
       <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto pb-16">
         {heroCard && (
-          <header className="relative mb-8 overflow-hidden rounded-3xl" style={{ height: 430 }}>
-            <Img src={assetUrl(heroCard.image)} alt="" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-night via-night/40 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-10">
-              <p className="mb-2 text-2xl font-semibold tracking-wide text-amber">{s.tagline}</p>
-              <h1 className="text-shadow text-6xl font-extrabold leading-tight">{heroCard.title}</h1>
-              <p className="mt-3 text-2xl text-ink-dim">
-                {[heroCard.prepTime, heroCard.cookTime, heroCard.servings].filter(Boolean).join('  ·  ')}
-              </p>
+          <header
+            className="mb-8 flex gap-0 overflow-hidden rounded-[2rem] bg-card border-2 border-card-border"
+            style={{ height: 430, boxShadow: '0 8px 30px rgb(67 49 31 / 0.10)' }}
+          >
+            <div className="flex min-w-0 flex-1 flex-col justify-center p-10">
+              <p className="mb-3 text-2xl font-bold tracking-wide text-leaf-deep">{s.tagline}</p>
+              <h1 className="text-6xl font-extrabold leading-tight text-ink line-clamp-2">{heroCard.title}</h1>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <MetaPill text={heroCard.prepTime} tone="leaf" />
+                <MetaPill text={heroCard.cookTime} tone="tomato" />
+                <MetaPill text={heroCard.servings} tone="sun" />
+              </div>
+            </div>
+            <div className="relative h-full w-[46%] shrink-0">
+              <Img
+                key={heroCard.id}
+                src={assetUrl(heroCard.image)}
+                alt={heroCard.title}
+                className="hero-fade absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           </header>
         )}

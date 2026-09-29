@@ -44,12 +44,18 @@ export const SearchScreen: React.FC = () => {
     <div className="flex h-full flex-col">
       <TopNav active="search" />
       <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto pb-16">
-        <div className="mb-6 rounded-2xl bg-card px-8 py-5">
-          <p className="text-xl text-ink-dim">{s.searchHint}</p>
-          <p className="mt-1 min-h-[52px] text-4xl font-bold tracking-wide">
-            {query || <span className="text-ink-dim/60">{s.searchTitle}…</span>}
-            <span className="ms-1 inline-block h-9 w-1 animate-pulse bg-amber align-middle" />
-          </p>
+        <div className="mb-6 flex items-center gap-5 rounded-3xl border-2 border-card-border bg-card px-8 py-5 shadow-sm">
+          <svg viewBox="0 0 24 24" width={38} height={38} fill="none" stroke="#4d9426" strokeWidth={2.4} className="shrink-0">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="M15.5 15.5 21 21" strokeLinecap="round" />
+          </svg>
+          <div className="min-w-0">
+            <p className="text-xl text-ink-dim">{s.searchHint}</p>
+            <p className="mt-1 min-h-[52px] text-4xl font-bold tracking-wide text-ink">
+              {query || <span className="text-ink-dim/60">{s.searchTitle}…</span>}
+              <span className="ms-1 inline-block h-9 w-1.5 animate-pulse rounded bg-leaf align-middle" />
+            </p>
+          </div>
         </div>
 
         <OnScreenKeyboard
