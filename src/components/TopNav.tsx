@@ -10,7 +10,7 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
   chapters: (
     <svg viewBox="0 0 24 24" width={26} height={26} fill="none" stroke="currentColor" strokeWidth={2}>
-      <path d="M12 5c-2-1.5-5-2-8-2v15c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z M12 5v15" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   search: (
