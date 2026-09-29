@@ -50,7 +50,9 @@ function localize(file: RecipeFile, lang: string): Localized {
     prepTime: (pick('prepTime') as string) ?? r.prepTime,
     cookTime: (pick('cookTime') as string) ?? r.cookTime,
     servings: (pick('servings') as string) ?? r.servings,
-    culturalNotes: t.culturalNotes ?? en.culturalNotes,
+    // culturalNotes exists only in en/fr translations — fall through to
+    // undefined (card hidden) rather than mixing English into other UIs.
+    culturalNotes: t.culturalNotes,
     ingredients: r.masterIngredients.map((mi) => ({
       name: trIng[mi.id]?.name ?? mi.name,
       amount: trIng[mi.id]?.standardAmount ?? mi.standardAmount,
