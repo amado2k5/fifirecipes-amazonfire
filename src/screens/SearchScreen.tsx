@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { getCurrentFocusKey, setFocus } from '@noriginmedia/norigin-spatial-navigation';
 import { api } from '../api/client';
 import { useApp } from '../app/AppContext';
-import { OnScreenKeyboard } from '../components/Keyboard';
+import { firstKeyForLang, OnScreenKeyboard } from '../components/Keyboard';
 import { RecipeCardView } from '../components/Cards';
 import { FocusGroup } from '../components/Focusable';
 import { TopNav } from '../components/TopNav';
@@ -39,6 +40,18 @@ export const SearchScreen: React.FC = () => {
     }
     return out;
   }, [query, haystack, data.index]);
+
+  // When the focused result card unmounts (query edited/cleared), the engine's
+  // auto-restore can land on the bare search-results group — an invisible
+  // focus with no left/right escape. Push it back to the keyboard instead.
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      if (getCurrentFocusKey() === 'search-results') {
+        setFocus(firstKeyForLang(lang));
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [results, lang]);
 
   return (
     <div className="flex h-full flex-col">
