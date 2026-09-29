@@ -7,7 +7,7 @@ import { Focusable, FocusGroup } from '../components/Focusable';
 import { KidsCardView, kidsGroupStyle } from '../components/Cards';
 import { KidsArt } from '../components/KidsArt';
 import { TopNav } from '../components/TopNav';
-import { fill } from '../i18n/strings';
+import { allergenName, fill } from '../i18n/strings';
 
 export const KIDS_DEFAULT_FOCUS = 'kf-all';
 
@@ -140,7 +140,7 @@ const ReadyRowItem: React.FC<{ art: string; label: string }> = ({ art, label }) 
 );
 
 export const KidsRecipeScreen: React.FC<{ id: string }> = ({ id }) => {
-  const { s, ensureFocus, navigate } = useApp();
+  const { s, lang, ensureFocus, navigate } = useApp();
   const { recipe, error, reload } = useKidsRecipe(id);
   const [ticked, setTicked] = useState<Set<number>>(new Set());
   const style = kidsGroupStyle(recipe?.group);
@@ -193,7 +193,7 @@ export const KidsRecipeScreen: React.FC<{ id: string }> = ({ id }) => {
               </div>
               {recipe.allergens && recipe.allergens.length > 0 && (
                 <p className="mt-4 inline-block rounded-2xl bg-[#ff8a80]/25 px-5 py-2 text-2xl font-bold text-[#a13333]">
-                  ⚠ {s.contains}: {recipe.allergens.join(', ')}
+                  ⚠ {s.contains}: {recipe.allergens.map((a) => allergenName(lang, a)).join(', ')}
                 </p>
               )}
             </div>

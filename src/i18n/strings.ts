@@ -1572,3 +1572,34 @@ export const STRINGS: Record<string, Partial<UIStrings>> = {
 export function stringsFor(lang: string): UIStrings {
   return { ...EN, ...(STRINGS[lang] ?? {}) };
 }
+
+/** The API ships allergen codes in English only — map them per language. */
+const ALLERGEN_NAMES: Record<string, Record<string, string>> = {
+  en: { eggs: 'eggs', milk: 'milk', gluten: 'gluten', sesame: 'sesame', peanuts: 'peanuts', nuts: 'tree nuts' },
+  ar: { eggs: 'بيض', milk: 'لبن', gluten: 'جلوتين', sesame: 'سمسم', peanuts: 'فول سوداني', nuts: 'مكسرات' },
+  fr: { eggs: 'œufs', milk: 'lait', gluten: 'gluten', sesame: 'sésame', peanuts: 'cacahuètes', nuts: 'fruits à coque' },
+  es: { eggs: 'huevos', milk: 'leche', gluten: 'gluten', sesame: 'sésamo', peanuts: 'cacahuetes', nuts: 'frutos secos' },
+  de: { eggs: 'Eier', milk: 'Milch', gluten: 'Gluten', sesame: 'Sesam', peanuts: 'Erdnüsse', nuts: 'Nüsse' },
+  it: { eggs: 'uova', milk: 'latte', gluten: 'glutine', sesame: 'sesamo', peanuts: 'arachidi', nuts: 'frutta a guscio' },
+  pt: { eggs: 'ovos', milk: 'leite', gluten: 'glúten', sesame: 'sésamo', peanuts: 'amendoim', nuts: 'frutos secos' },
+  ru: { eggs: 'яйца', milk: 'молоко', gluten: 'глютен', sesame: 'кунжут', peanuts: 'арахис', nuts: 'орехи' },
+  zh: { eggs: '鸡蛋', milk: '牛奶', gluten: '麸质', sesame: '芝麻', peanuts: '花生', nuts: '坚果' },
+  ja: { eggs: '卵', milk: '牛乳', gluten: 'グルテン', sesame: 'ごま', peanuts: 'ピーナッツ', nuts: 'ナッツ' },
+  ko: { eggs: '계란', milk: '우유', gluten: '글루텐', sesame: '참깨', peanuts: '땅콩', nuts: '견과류' },
+  tr: { eggs: 'yumurta', milk: 'süt', gluten: 'glüten', sesame: 'susam', peanuts: 'fıstık', nuts: 'kuruyemiş' },
+  hi: { eggs: 'अंडे', milk: 'दूध', gluten: 'ग्लूटेन', sesame: 'तिल', peanuts: 'मूंगफली', nuts: 'मेवे' },
+  ur: { eggs: 'انڈے', milk: 'دودھ', gluten: 'گلوٹین', sesame: 'تل', peanuts: 'مونگ پھلی', nuts: 'خشک میوہ جات' },
+  fa: { eggs: 'تخم‌مرغ', milk: 'شیر', gluten: 'گلوتن', sesame: 'کنجد', peanuts: 'بادام‌زمینی', nuts: 'آجیل' },
+  el: { eggs: 'αυγά', milk: 'γάλα', gluten: 'γλουτένη', sesame: 'σουσάμι', peanuts: 'φιστίκια', nuts: 'ξηροί καρποί' },
+  ku: { eggs: 'hêk', milk: 'şîr', gluten: 'glûten', sesame: 'kunjît', peanuts: 'fîstiqa erdê', nuts: 'gûz' },
+  id: { eggs: 'telur', milk: 'susu', gluten: 'gluten', sesame: 'wijen', peanuts: 'kacang tanah', nuts: 'kacang-kacangan' },
+  sw: { eggs: 'mayai', milk: 'maziwa', gluten: 'gluteni', sesame: 'ufuta', peanuts: 'karanga', nuts: 'mbegu kavu' },
+  nl: { eggs: 'eieren', milk: 'melk', gluten: 'gluten', sesame: 'sesam', peanuts: "pinda's", nuts: 'noten' },
+  ps: { eggs: 'هګۍ', milk: 'شیدې', gluten: 'ګلوټین', sesame: 'کنجد', peanuts: 'ځمکني بادام', nuts: 'مغزن میوه جات' },
+  he: { eggs: 'ביצים', milk: 'חלב', gluten: 'גלוטן', sesame: 'שומשום', peanuts: 'בוטנים', nuts: 'אגוזים' },
+  pl: { eggs: 'jajka', milk: 'mleko', gluten: 'gluten', sesame: 'sezam', peanuts: 'orzeszki ziemne', nuts: 'orzechy' },
+  sv: { eggs: 'ägg', milk: 'mjölk', gluten: 'gluten', sesame: 'sesam', peanuts: 'jordnötter', nuts: 'nötter' },
+};
+
+export const allergenName = (lang: string, code: string): string =>
+  ALLERGEN_NAMES[lang]?.[code] ?? ALLERGEN_NAMES.en[code] ?? code;
