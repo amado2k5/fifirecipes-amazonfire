@@ -66,26 +66,30 @@ export const SearchScreen: React.FC = () => {
           onClear={() => setQuery('')}
         />
 
-        <FocusGroup focusKey="search-results" className="mt-10">
-          {query.trim() && (
-            <h2 className="mb-4 px-1 text-3xl font-bold">
-              {results.length > 0 ? `${s.resultsFor} “${query.trim()}”` : s.noResults}
-            </h2>
-          )}
-          <div className="grid grid-cols-5 gap-6 py-2">
-            {results.map((id, i) => {
-              const card = data.index.get(id)!;
-              return (
-                <RecipeCardView
-                  key={id}
-                  focusKey={`sr-${i}`}
-                  card={card}
-                  onEnter={() => navigate({ name: 'recipe', id })}
-                />
-              );
-            })}
-          </div>
-        </FocusGroup>
+        {query.trim() && results.length === 0 ? (
+          <h2 className="mt-10 mb-4 px-1 text-3xl font-bold">{s.noResults}</h2>
+        ) : (
+          <FocusGroup focusKey="search-results" className="mt-10">
+            {query.trim() && (
+              <h2 className="mb-4 px-1 text-3xl font-bold">
+                {s.resultsFor} “{query.trim()}”
+              </h2>
+            )}
+            <div className="grid grid-cols-5 gap-6 py-2">
+              {results.map((id, i) => {
+                const card = data.index.get(id)!;
+                return (
+                  <RecipeCardView
+                    key={id}
+                    focusKey={`sr-${i}`}
+                    card={card}
+                    onEnter={() => navigate({ name: 'recipe', id })}
+                  />
+                );
+              })}
+            </div>
+          </FocusGroup>
+        )}
       </div>
     </div>
   );
