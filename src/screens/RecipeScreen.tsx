@@ -32,11 +32,14 @@ function localize(file: RecipeFile, lang: string): Localized {
   const r = file.recipe;
   const t = file.translations[lang] ?? {};
   const en = file.translations.en ?? {};
+  // The master recipe.* fields are Arabic — for `lang === 'ar'` the
+  // translations.ar block is empty, so fall back to the master fields
+  // directly instead of the English translation.
   const pick = (k: 'title' | 'chapter' | 'category' | 'cookingMethod' | 'prepTime' | 'cookTime' | 'servings') =>
-    t[k] ?? en[k] ?? r[k];
+    t[k] ?? (lang === 'ar' ? r[k] : en[k] ?? r[k]);
 
-  const trIng = t.ingredients ?? en.ingredients ?? {};
-  const trIns = t.instructions ?? en.instructions ?? {};
+  const trIng = t.ingredients ?? (lang === 'ar' ? {} : en.ingredients ?? {});
+  const trIns = t.instructions ?? (lang === 'ar' ? {} : en.instructions ?? {});
 
   return {
     title: (pick('title') as string) ?? r.title,
@@ -54,7 +57,9 @@ function localize(file: RecipeFile, lang: string): Localized {
     })),
     steps: r.uniqueInstructions.map((ui) => ({
       n: ui.stepNumber,
-      text: trIns[String(ui.stepNumber)] ?? ui.textEn ?? ui.text,
+      text:
+        trIns[String(ui.stepNumber)] ??
+        (lang === 'ar' ? ui.text ?? ui.textEn : ui.textEn ?? ui.text),
       phase: ui.phase,
       alternative: ui.isAlternative ? ui.alternativeLabel ?? 'alternative' : undefined,
       tip: ui.importance === 'tip',

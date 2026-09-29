@@ -45,7 +45,10 @@ export const Rail: React.FC<RailProps> = ({ focusKey, title, count, renderItem }
           {title}
         </h2>
       )}
-      <div className="flex gap-6 overflow-hidden p-5 -m-5" style={{ width: 'calc(100% + 40px)' }}>
+      {/* Bleed horizontally only: a vertical negative margin would shrink the
+          group's measured box below its neighbor's bottom edge, and the
+          spatial engine then drops the next rail as "above the cutoff". */}
+      <div className="flex gap-6 overflow-hidden px-5 py-4 -mx-5" style={{ width: 'calc(100% + 40px)' }}>
         {items}
       </div>
     </FocusGroup>
