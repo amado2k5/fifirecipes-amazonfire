@@ -3,3 +3,5 @@ dist
 dist.zip
 *.local
 .DS_Store
+*.apk
+.playwright-mcp/

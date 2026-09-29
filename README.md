@@ -51,30 +51,61 @@ Android TV keycodes (`KEYCODE_DPAD_*` 19–22, `KEYCODE_ENTER` 66,
 
 ```bash
 npm run build    # self-contained dist/ (relative asset paths, base './')
-npm run package  # dist.zip — ready for Appstore submission
+npm run package  # dist.zip — for Web App Tester sideloading (see below)
 ```
 
 Bundle budget: initial JS ≈ 125KB gzipped, CSS ≈ 6KB gzipped.
 
 ## Packaging targets
 
-### 1. Fire OS — packaged HTML5 app
+### 1. Fire OS — Android WebView wrapper (APK)
 
-1. `npm run build && npm run package` → `dist.zip`.
-2. Submit `dist.zip` in the Amazon Appstore console as a **packaged web
-   app**; launch path is `/index.html`.
-3. On-device test: install the **Amazon Web App Tester** on a Fire TV,
-   feed it the zip (sideload via `adb`) or install the Appstore build.
+> Note: Amazon **discontinued new web-app (zip) submissions on Oct 31,
+> 2024** — new submissions must be Android packages. `dist.zip` is still
+> produced for Web App Tester sideloading, but the store wants the APK.
+
+The `android/` directory contains a minimal native wrapper: a full-screen
+WebView that loads `https://firetvapp.fifi.cooking/` (hosted mode — store
+updates ship instantly via the Pages deploy). DPAD/Enter reach JS natively;
+BACK and media play/pause are injected as synthetic key events; at the app
+root the web app calls `FifiBridge.exitApp()` to finish the Activity.
+
+Build it:
+
+```bash
+# prerequisites (one time):
+#   brew install openjdk@17 gradle --cask android-commandlinetools
+#   sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+cd android
+ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
+  ./gradlew assembleRelease
+# signed APK → app/build/outputs/apk/release/app-release.apk
+```
+
+Signing: `android/keystore.properties` + `fifi-release.keystore` are
+gitignored — Amazon re-signs every upload with its own per-account
+certificate, so the local key is throwaway. Recreate with `keytool` if lost.
 
 ### 2. Vega OS
 
-1. Wrap the same `dist/` build in a Vega WebView app (`.vpkg`) using the
+1. Wrap the same build in a Vega WebView app (`.vpkg`) using the
    **Vega Developer Tools / `kepler` CLI**.
 2. Register the device under your developer account and install over USB.
 
-### 3. Hosted mode (optional)
+### 3. Hosted mode (live now)
 
-1. Deploy `dist/` to this repo's `gh-pages` branch.
-2. Submit the GitHub Pages URL as a **Hosted Web App** — enables instant
-   UI updates without Appstore review. `base: './'` keeps every asset
-   path relative, so the same build works packaged or hosted.
+`dist/` deploys to GitHub Pages on every merge to `main` and serves
+`https://firetvapp.fifi.cooking/` — the same URL the APK loads.
+
+## Testing on a Fire TV without publishing
+
+- **Hosted**: install **Amazon Web App Tester** on the TV → Hosted Apps →
+  enter `https://firetvapp.fifi.cooking/`.
+- **Packaged zip**: `adb push dist.zip /sdcard/amazonwebapps/` → Web App
+  Tester → Packaged Apps → Sync List → Test.
+- **Real APK**: enable ADB debugging on the TV, then
+  `adb connect <tv-ip>:5555 && adb install fifi-recipes.apk`.
+- **DevTools**: press Menu (≡) inside Web App Tester → Enable DevTools →
+  `chrome://inspect` on your Mac.
+- **Live App Testing** in the developer console distributes the APK to
+  invited testers before public release.

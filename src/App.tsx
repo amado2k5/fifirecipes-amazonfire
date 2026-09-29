@@ -207,8 +207,13 @@ export default function App() {
       return;
     }
     rememberFocus();
-    setStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
-  }, [video, rememberFocus]);
+    if (stack.length <= 1) {
+      // At the root — ask the Android wrapper to exit (no-op in a browser).
+      (window as unknown as { FifiBridge?: { exitApp?: () => void } }).FifiBridge?.exitApp?.();
+      return;
+    }
+    setStack((prev) => prev.slice(0, -1));
+  }, [video, rememberFocus, stack.length]);
 
   useEffect(() => installBackHandler(back), [back]);
 
