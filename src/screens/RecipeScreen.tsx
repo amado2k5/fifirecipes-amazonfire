@@ -186,7 +186,7 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
       </Focusable>
 
       <div className="mt-10 grid grid-cols-3 gap-10">
-        <section>
+        <section className="min-w-0">
           <h2 className="mb-4 flex items-center gap-3 text-4xl font-bold text-ink">
             <span className="inline-block h-7 w-7 rounded-full bg-leaf" aria-hidden="true" />
             {s.ingredients}
@@ -194,10 +194,16 @@ export const RecipeScreen: React.FC<Props> = ({ id }) => {
           <div className="rounded-3xl border-2 border-card-border bg-card p-6">
             {loc.ingredients.map((ing, i) => (
               <Focusable key={i} focusKey={`ing-${i}`} isStatic className="rounded-lg">
+                {/* Name and amount are stacked rather than side by side: amounts can be
+                    long phrases ("500g fresh leaves, finely chopped…"), and a shrink-0
+                    amount in a 1/3-width column crushed the name to one word per line
+                    and overflowed into the Steps column. */}
                 <div className={`flex gap-3 py-3 text-[24px] leading-snug ${i ? 'border-t-2 border-card-border' : ''}`}>
                   <span className="mt-2 inline-block h-3 w-3 shrink-0 rounded-full bg-leaf" aria-hidden="true" />
-                  <span className="min-w-0 flex-1 font-medium text-ink">{ing.name}</span>
-                  {ing.amount && <span className="shrink-0 font-bold text-leaf-deep">{ing.amount}</span>}
+                  <div className="min-w-0 flex-1 break-words">
+                    <span className="block font-medium text-ink">{ing.name}</span>
+                    {ing.amount && <span className="mt-1 block font-bold text-leaf-deep">{ing.amount}</span>}
+                  </div>
                 </div>
               </Focusable>
             ))}
