@@ -1,7 +1,7 @@
 # FiFi Recipes — Fire TV App
 
 A 10-foot, remote-first TV web app for the FiFi Cooking recipe archive
-(2,337 recipes). Built with Vite + React + TypeScript + Tailwind CSS, with
+(2,380 recipes). Built with Vite + React + TypeScript + Tailwind CSS, with
 D-pad spatial navigation powered by
 `@noriginmedia/norigin-spatial-navigation`.
 
