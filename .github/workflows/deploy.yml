@@ -48,4 +48,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4"
-          command: pages deploy dist --project-name=firetvapp-fifi-cooking
+          command: pages deploy dist --project-name=fifirecipes-amazonfire
