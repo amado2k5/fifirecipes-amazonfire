@@ -1,0 +1,3 @@
+# Cloudflare Pages project configuration.
+name = "firetvapp-fifi-cooking"
+pages_build_output_dir = "dist"
